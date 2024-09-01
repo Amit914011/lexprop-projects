@@ -15,6 +15,7 @@ import Submitissue from './components/Lawyer/Submitissue.jsx'
 import LawerHome from './components/Lawyer/LawyerHome.jsx'
 import Contactus from './components/Client/Contactus.jsx'
 import Service from './components/Client/Service.jsx'
+import LawyerSolution from './components/Lawyer/LawyerSolution.jsx'
 
 
 const router = createBrowserRouter(
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
     <Route path='/lawyer/' element={<LawerHome/>}/> 
     <Route path='/lawyer/pending' element={<Pending/>}/>
     <Route path='/lawyer/submitissue' element={<Submitissue/>}/>
+    <Route path='/lawyer/solution' element={<LawyerSolution/>}/>
 
     </Route>
  </>
