@@ -1,206 +1,113 @@
-import React, { useState } from "react";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import React, { useState } from 'react';
 
 const RiseIssue = () => {
-  const [formData, setFormData] = useState({
-    issueType: "",
-    issueTitle: "",
-    issueMessage: "",
-  });
-  const handleBody=e=>{
-    console.log(e)
-    setBody(e)
-  }
-  const [body, setBody]=useState("");
+  const [issue, setIssue] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [file, setFile] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const validate = () => {
-    let tempErrors = {};
-    let isValid = true;
-
-    if (formData.issueType.trim() === "") {
-      tempErrors.issueType = "Issue Type is required";
-      isValid = false;
-    }
-    if (formData.issueTitle.trim() === "") {
-      tempErrors.issueTitle = "Issue Title is required";
-      isValid = false;
-    }
-    if (formData.issueMessage.trim() === "") {
-      tempErrors.issueMessage = "Issue Message is required";
-      isValid = false;
-    }
-
-    setErrors(tempErrors);
-    return isValid;
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log("Issue Data Submitted: ", formData);
-      // Perform submit actions here (e.g., send data to backend)
+    
+    // Check if description is at least 1000 words
+    const wordCount = description.trim().split(/\s+/).length;
+    if (wordCount < 1000) {
+      setErrorMessage('Description must be at least 1000 words.');
+      return;
     }
+
+    setErrorMessage('');
+
+    // Handle form submission logic here
+    console.log({ issue, title, description, file });
+
+    // Reset form
+    setIssue('');
+    setTitle('');
+    setDescription('');
+    setFile(null);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md"
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+      <form 
+        onSubmit={handleSubmit} 
+        className="bg-white p-6 rounded-lg shadow-md w-full max-w-xl"
       >
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-          Rise Issue
-        </h2>
-
-        {/* Issue Type Field */}
+        <h2 className="text-2xl font-bold mb-6 text-center">Rise Issue</h2>
+        
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Issue Type</label>
-          <select
-            name="issueType"
-            value={formData.issueType}
-            onChange={handleChange}
-            className={`w-full p-3 border rounded-md focus:outline-none ${
-              errors.issueType ? "border-red-500" : "border-gray-300"
-            }`}
+          <label htmlFor="issue" className="block text-gray-700 font-medium mb-2">Select Issue</label>
+          <select 
+            id="issue" 
+            value={issue} 
+            onChange={(e) => setIssue(e.target.value)} 
+            className="w-full p-2 border border-gray-300 rounded-md"
+            required
           >
-            <option value="">Select an issue type</option>
-            <option value="Civil">Civil</option>
-            <option value="Criminal">Criminal</option>
-            <option value="Family">Family</option>
-            <option value="Intellectual Property">Intellectual Property</option>
-            <option value="Tax">Tax</option>
+            <option value="" disabled>Select Issue</option>
+            <option value="ciminalcase">Criminal Case</option>
+            <option value="civilcase">Civil Case</option>
+            <option value="corporatecase">Corporate Case</option>
+            <option value="laborcase">Labor Case</option>
+            <option value=" intellectualpropertycase">  Intellectual Property Case</option>
+            <option value="environmentalcase">Environmental Case</option>
           </select>
-          {errors.issueType && (
-            <p className="text-red-500 text-xs mt-2">{errors.issueType}</p>
-          )}
         </div>
 
-        {/* Issue Title Field */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Issue Title</label>
-          <input
-            type="text"
-            name="issueTitle"
-            value={formData.issueTitle}
-            onChange={handleChange}
-            className={`w-full p-3 border rounded-md focus:outline-none ${
-              errors.issueTitle ? "border-red-500" : "border-gray-300"
-            }`}
-            placeholder="Enter the issue title"
+          <label htmlFor="title" className="block text-gray-700 font-medium mb-2">Title</label>
+          <input 
+            type="text" 
+            id="title" 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)} 
+            className="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="Enter title" 
+            required 
           />
-          {errors.issueTitle && (
-            <p className="text-red-500 text-xs mt-2">{errors.issueTitle}</p>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-gray-700 font-medium mb-2">Description (Minimum 1000 words)</label>
+          <textarea 
+            id="description" 
+            value={description} 
+            onChange={(e) => setDescription(e.target.value)} 
+            className="w-full p-2 border border-gray-300 rounded-md h-40 resize-none"
+            placeholder="Enter description" 
+            required
+          ></textarea>
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
           )}
         </div>
 
-        {/* Issue Message Field */}
-        <div className="mb-6">
-          <label className="block text-gray-700 font-bold mb-2">Issue Message</label>
-          <textarea
-            name="issueMessage"
-            value={formData.issueMessage}
-            onChange={handleChange}
-            className={`w-full p-3 border rounded-md focus:outline-none h-32 ${
-              errors.issueMessage ? "border-red-500" : "border-gray-300"
-            }`}
-            placeholder="Describe the issue here..."
+        <div className="mb-4">
+          <label htmlFor="fileUpload" className="block text-gray-700 font-medium mb-2">Upload File</label>
+          <input 
+            type="file" 
+            id="fileUpload" 
+            onChange={handleFileChange} 
+            className="w-full p-2 border border-gray-300 rounded-md"
+            required 
           />
-          {errors.issueMessage && (
-            <p className="text-red-500 text-xs mt-2">{errors.issueMessage}</p>
-          )}
         </div>
 
-
-
-
-
-        {/* <div>
-        <div className="App">
-            <h1>Text editer</h1>
-<ReactQuill
-placeholder="write something amazing..."
-modules={App.modules}
-formats={App.modules}
-onChange={handleBody}
-value={body}
-/>
-</div>
-        </div> */}
-
-
-
-
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
-          >
-            Submit Issue
-          </button>
-        </div>
+        <button 
+          type="submit" 
+          className="w-full bg-blue-500 text-white font-medium py-2 rounded-md hover:bg-blue-600 transition duration-300"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
 };
 
-
-
-    // App.modules={
-    //     toolbar:[
-    //     [{ header: "1" }, {header: "2" }, {header: [3, 4, 5, 6] }, { font: []}],
-    //     [{size:[]}],
-    //     ["bold","italic","underline","strike","blackquote"],
-    //     [ {list: "ordered"},{list:"bullet"}],
-    //     ["link", "image","video"],
-    //     ["clean"],
-    //     ["code-block"],]};
-    //     App. formats = [
-    //         "header",
-    //         "font",
-    //         "size",
-    //         "bold",
-    //         "italic",
-    //         "underline",
-    //         "strike",
-    //         "blockquote",
-    //         "list",
-    //         "bullet",
-    //         "link",
-    //         "image",
-    //         "video",
-    //         "code-block"];
-
 export default RiseIssue;
-
-// {
-//     App.modules={
-//         toolbar:[{ header: "1" }, {header: "2" }, {header: [3, 4, 5, 6] }, { font: []}],
-//         [{size:[]}],
-//         ["bold","italic","underline","strike",blackquote"],
-        // [ {list: "ordered"},{list:"bullet"}],
-        // ["link", "image","video"],
-        // ["clean"],
-        // ["code-block"],]};
-        // App. formats = [
-        //     "header",
-        //     "font",
-        //     "size",
-        //     "bold",
-        //     "italic",
-        //     "underline",
-        //     "strike",
-        //     "blockquote",
-        //     "list",
-        //     "bullet",
-        //     "link",
-        //     "image",
-        //     "video",
-        //     "code-block"];
-// }

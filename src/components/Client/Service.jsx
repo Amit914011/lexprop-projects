@@ -52,8 +52,8 @@ const Service = () => {
     }
   }
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4 cursor-pointer" onClick={handleClick}>
-      <div className="w-full max-w-6xl bg-white shadow-md rounded-lg p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4 " >
+      <div className="w-full max-w-6xl bg-white shadow-md rounded-lg p-8" >
         <h1 className="text-3xl font-semibold text-gray-800 mb-8 text-center">
           Our Services
         </h1>
@@ -61,7 +61,9 @@ const Service = () => {
           {services.map((service, index) => (
             <div
               key={index}
-              className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition duration-300"
+              className="flex flex-col items-center p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer"
+              onClick={handleClick}
+              
             >
               <div className="text-5xl mb-4">{service.icon}</div>
               <h2 className="text-xl font-semibold text-gray-800 mb-2">
